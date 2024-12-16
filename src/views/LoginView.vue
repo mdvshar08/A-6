@@ -1,129 +1,189 @@
 <script setup>
 import { RouterLink, useRouter } from 'vue-router';
 import { ref } from 'vue';
+import { useStore } from "../store";
 
+const store = useStore();
 const router = useRouter();
+const email = ref('');
 const password = ref('');
 
 const handleLogin = () => {
-    if (password.value === "madhav") {
-        router.push("/movies");
-    } else {
-        alert("Invalid Password");
-    }
+  if (password.value === "123") {
+    store.email = email.value;
+    router.push("/movies");
+  } else {
+    alert("Invalid Password");
+  }
+};
+
+const goToHome = () => {
+  router.push("/");
 };
 </script>
 
 <template>
-    <h1 class="hero">BingeBox</h1>
-    <RouterLink to="/register" class="button register">Register</RouterLink>
-    <RouterLink to="/" class="button home">Back to Home</RouterLink>
-
-    <div class="form-container">
+  <div class="hero">
+    <div class="overlay">
+      <div class="navbar">
+        <h1>BingeBox</h1>
+        <div class="button-group">
+          <RouterLink to="/register" class="button register">Register</RouterLink>
+          <button @click="goToHome" class="button back">Back to Home</button>
+        </div>
+      </div>
+      <div class="form-container">
         <h2>Login to Your Account</h2>
         <form @submit.prevent="handleLogin">
-            <input type="email" placeholder="Email" class="input-field" required />
-            <input v-model="password" type="password" placeholder="Password" class="input-field" required />
-            <button type="submit" class="button login">Login</button>
+          <input v-model="email" type="email" placeholder="Email" class="input-field" required />
+          <input v-model="password" type="password" placeholder="Password" class="input-field" required />
+          <button type="submit" class="button login">Login</button>
         </form>
+      </div>
     </div>
+  </div>
 </template>
 
 <style scoped>
-body {
-    background-color: #141414;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    padding: 20px 0 70px;
-    color: #ffffff;
-}
-
 .hero {
-    background-color: #141414;
-    color: #ffffff;
-    text-align: center;
-    padding: 60px 20px;
-    margin-bottom: 20px;
+  background-color: #141414;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
 }
 
-.hero h1 {
-    font-size: 60px;
-    color: #e50914;
-    margin-bottom: 10px;
-    font-weight: bold;
+.overlay {
+  background-color: rgba(0, 0, 0, 0.8);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  padding: 20px;
 }
 
-.hero p {
-    font-size: 20px;
-    margin-bottom: 20px;
-    color: #d3d3d3;
+.navbar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  background: rgba(0, 0, 0, 0.85);
+  position: absolute;
+  top: 0;
+  z-index: 10;
+}
+
+.navbar h1 {
+  font-size: 2.5rem;
+  font-family: 'Poppins', sans-serif;
+  font-weight: bold;
+  color: #e50914;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+}
+
+.navbar .button {
+  padding: 12px 25px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.navbar .register {
+  background: #e50914;
+}
+
+.navbar .register:hover {
+  background: #f40612;
+}
+
+.navbar .back {
+  background: #333333;
+}
+
+.navbar .back:hover {
+  background: #444444;
 }
 
 .form-container {
-    background-color: #222;
-    border-radius: 10px;
-    padding: 40px 20px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.6);
-    max-width: 400px;
-    margin: 0 auto;
+  text-align: center;
+  margin-top: 50px;
+  width: 100%;
+  max-width: 400px;
 }
 
 .form-container h2 {
-    color: #e50914;
-    text-align: center;
-    font-size: 28px;
-    margin-bottom: 30px;
-    font-weight: bold;
+  font-size: 2.2rem;
+  font-weight: 600;
+  margin-bottom: 25px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
 .input-field {
-    width: 80%; 
-    padding: 10px; 
-    margin-bottom: 15px;
-    border: 2px solid #333;
-    border-radius: 5px;
-    font-size: 14px;
-    color: #ffffff;
-    background-color: #141414;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
+  padding: 15px;
+  width: 100%;
+  border-radius: 5px;
+  border: 2px solid #333;
+  background-color: #1c1c1c;
+  color: white;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
 }
 
 .input-field:focus {
-    border-color: #e50914;
-    outline: none;
+  border-color: #e50914;
+  outline: none;
 }
 
-.button {
-    background-color: #e50914;
-    color: #ffffff;
-    padding: 12px 30px;
-    font-size: 18px;
-    border: none;
-    margin-top: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
+.button.login {
+  background: #e50914;
+  color: white;
+  padding: 12px 30px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.button.login:hover {
+  background: #f40612;
+  transform: scale(1.05);
+}
+
+@media (max-width: 600px) {
+  .navbar h1 {
+    font-size: 2rem;
+  }
+
+  .input-field {
     width: 100%;
-    font-weight: bold;
-}
+  }
 
-.button:hover {
-    background-color: #f40612;
-    transform: scale(1.05);
-}
+  .form-container h2 {
+    font-size: 1.8rem;
+  }
 
-footer {
-    background-color: #141414;
-    color: #d3d3d3;
-    text-align: center;
-    padding: 10px;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    border-top: 2px solid #333;
+  .button {
+    font-size: 0.9rem;
+    padding: 10px 20px;
+  }
 }
 </style>

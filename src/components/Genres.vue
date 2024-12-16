@@ -1,109 +1,120 @@
 <script setup>
-import axios from "axios";
-import { ref, onMounted } from 'vue';
-import { useRouter } from "vue-router";
+  import axios from "axios";
+  import { ref, onMounted } from "vue";
+  import { useRouter } from "vue-router";
+  import { useStore } from "../store";
 
-const props = defineProps(["genres"]);
-const router = useRouter();
-const selectedGenre = ref(28);
-const response = ref(null);
+  const props = defineProps(["genres"]);
+  const router = useRouter();
+  const selectedGenre = ref(28);
+  const response = ref(null);
+  const store = useStore();
 
-async function getMovieByGenre() {
-    response.value = await axios.get(`https://api.themoviedb.org/3/discover/movie?api_key=${import.meta.env.VITE_TMDB_KEY}&with_genres=${selectedGenre.value}`);
-}
+  const getMovieByGenre = async () => {
+    response.value = await axios.get(
+      `https://api.themoviedb.org/3/discover/movie?api_key=${import.meta.env.VITE_API_KEY}&with_genres=${selectedGenre.value}`
+    );
+  };
 
-function getMovieDetails(id) {
-    router.push(`/movies/${id}`)
-}
-
-onMounted(async () => {
-    response.value = await axios.get(`https://api.themoviedb.org/3/discover/movie?api_key=${import.meta.env.VITE_TMDB_KEY}&with_genres=${selectedGenre.value}`);
-})
+  onMounted(getMovieByGenre);
 </script>
 
 <template>
-    <div class="movie-gallery">
-        <select v-model="selectedGenre" @change="getMovieByGenre()">
-            <option v-for="genre of genres" :value="genre.id">{{ genre.genreName }}</option>
-        </select>
-        <div v-if="response" class="movie-list">
-            <div v-for="movie in response.data.results" :key="movie.id" class="movie-card"
-                @click="getMovieDetails(movie.id)">
-                <img :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" alt="Movie Poster"
-                    class="movie-poster" />
-                <p class="movie-title">{{ movie.title }}</p>
-            </div>
-        </div>
+  <div class="movie-gallery">
+    <select v-model="selectedGenre" @change="getMovieByGenre">
+      <option v-for="genre of genres" :value="genre.id" :key="genre.id">{{ genre.genreName }}</option>
+    </select>
+    <div v-if="response" class="movie-list">
+      <div v-for="movie in response.data.results" :key="movie.id" class="movie-card"
+        @click="router.push(`/movies/${movie.id}`)">
+        <img :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" alt="Movie Poster" class="movie-poster" />
+        <p class="movie-title">{{ movie.title }}</p>
+        <button v-if="!store.cart.has(movie.id)"
+          @click.stop="store.addToCart(movie.id, { title: movie.title, url: movie.poster_path })" class="movie-site">
+          Buy
+        </button>
+        <button v-else @click.stop="store.removeFromCart(movie.id)" class="movie-site added"
+          :disabled="store.cart.has(movie.id)">
+          Added
+        </button>
+      </div>
     </div>
+  </div>
 </template>
 
 <style scoped>
 .movie-gallery {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    padding: 20px;
-    color: #ffffff;
-    background-color: #141414;
+  background-color: #141414;
+  color: #ffffff;
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  min-height: 100vh;
 }
 
-.movie-gallery select {
-    padding: 10px 20px;
-    font-size: 18px;
-    border: 1px solid #333333;
-    border-radius: 5px;
-    background-color: #222222;
-    color: #ffffff;
-    cursor: pointer;
-    margin-bottom: 20px;
-    transition: background-color 0.3s, border-color 0.3s;
-}
-
-.movie-gallery select:hover {
-    background-color: #333333;
-    border-color: #e50914;
+select {
+  background-color: #333;
+  color: #ffffff;
+  border: 1px solid #555;
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 20px;
+  font-size: 16px;
 }
 
 .movie-list {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 20px;
-    width: 100%;
-    max-width: 1200px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 20px;
 }
 
 .movie-card {
-    background-color: #222222;
-    border-radius: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.6);
-    overflow: hidden;
-    width: 220px;
-    cursor: pointer;
-    transition: transform 0.3s, box-shadow 0.3s;
+  background-color: #222;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
 }
 
 .movie-card:hover {
-    transform: scale(1.05);
-    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.8);
+  transform: scale(1.05);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.5);
 }
 
 .movie-poster {
-    width: 100%;
-    height: auto;
-    display: block;
-    border-bottom: 2px solid #e50914;
+  width: 100%;
+  display: block;
+  border-bottom: 1px solid #333;
 }
 
 .movie-title {
-    padding: 10px;
-    text-align: center;
-    font-size: 16px;
-    color: #e50914;
-    font-weight: 600;
-    background-color: #141414;
-    border-top: 2px solid #333333;
+  text-align: center;
+  font-size: 14px;
+  padding: 10px;
 }
 
+.movie-site {
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding: 10px;
+  background-color: #e50914;
+  color: #ffffff;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.movie-site:hover {
+  background-color: #f6121d;
+}
+
+.movie-site.added {
+  background-color: #555;
+  cursor: not-allowed;
+}
+
+.movie-site.added:hover {
+  background-color: #555;
+}
 </style>

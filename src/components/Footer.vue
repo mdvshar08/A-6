@@ -1,26 +1,27 @@
 <script setup>
-
 </script>
 
 <template>
-    <div>
-        <h4>© All Rights Reserved, BingeBox 2024</h4>
+    <div class="footer">
+        <p>© 2024 BingeBox. All Rights Reserved.</p>
     </div>
 </template>
 
 <style scoped>
-div {
-    background-color: #141414;
-    color: #ffffff; 
+.footer {
+    background-color: #1f1f1f;
+    color: #d3d3d3;
     text-align: center;
-    padding: 10px;
-    position: fixed;
-    bottom: 0;
-    left: 0;
     width: 100%;
-    border-top: 2px solid #333333; 
-    font-family: Arial, sans-serif; 
+    padding: 20px 10px;
     font-size: 14px;
+    border-top: 2px solid #333;
+    position: relative;
 }
 
+.footer p {
+    margin: 0;
+    letter-spacing: 1px;
+    font-weight: 500;
+}
 </style>

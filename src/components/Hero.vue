@@ -13,25 +13,27 @@
 
 <style scoped>
 .hero {
-    background-color: #141414;
-    color: #ffffff; 
+    background-color: #1f1f1f; /* Darker gray for contrast with #141414 */
+    color: #ffffff;
     text-align: center;
-    padding: 60px 20px;
-    margin-bottom: 20px;
+    padding: 60px 20px 40px;
+    margin: 0;
     width: 100%;
+    box-sizing: border-box;
 }
 
 .hero h1 {
-    font-size: 60px;
+    font-size: 40px;
     color: #e50914;
-    margin-bottom: 10px;
-    font-weight: bold; 
+    margin: 0 0 20px;
+    font-weight: bold;
+    text-transform: uppercase;
 }
 
 .hero p {
     font-size: 20px;
     color: #ffffff;
-    margin-bottom: 20px;
+    margin: 0;
+    padding: 10px 0;
 }
 </style>
-

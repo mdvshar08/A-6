@@ -1,120 +1,205 @@
 <script setup>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useStore } from '../store';
 
+const store = useStore();
+const router = useRouter();
+
+const password = ref('');
+const password2 = ref('');
+const firstName = ref('');
+const lastName = ref('');
+const email = ref('');
+
+function handleSubmit() {
+  if (password.value === password2.value) {
+    store.firstName = firstName.value;
+    store.lastName = lastName.value;
+    store.email = email.value;
+    store.password = password.value;
+    router.push('/movies');
+  } else {
+    window.alert('Passwords do not match; Please re-enter');
+  }
+}
+
+function goToHome() {
+  router.push('/');
+}
 </script>
 
 <template>
-    <h1 class="hero">BingeBox</h1>
-    <RouterLink to="/Login" class="button register">Login</RouterLink>
-    <RouterLink to="/" class="button home">Back to Home</RouterLink>
-
-    <div class="form-container">
-        <h2>Register Account</h2>
-        <form @submit.prevent="handleLogin">
-            <input type="text" placeholder="First Name" class="input-field" required>
-            <input type="text" placeholder="Last Name" class="input-field" required>
-            <input type="email" placeholder="Email" class="input-field" required />
-            <input v-model="password" type="password" placeholder="Password" class="input-field" required />
-            <input v-model="reEnterPassword" type="password" placeholder="Re-enter Password" class="input-field" required />
-            <button type="submit" class="button login">Register</button>
+  <div class="hero">
+    <div class="overlay">
+      <div class="navbar">
+        <h1>BingeBox</h1>
+        <div class="button-group">
+          <a href="login" class="button login">Login</a>
+          <button class="button back" @click="goToHome">Back to Home</button>
+        </div>
+      </div>
+      <div class="form-container">
+        <h2>Create an Account</h2>
+        <form @submit.prevent="handleSubmit">
+          <input v-model="firstName" type="text" placeholder="First Name" class="input-field" required />
+          <input v-model="lastName" type="text" placeholder="Last Name" class="input-field" required />
+          <input v-model="email" type="email" placeholder="Email" class="input-field" required />
+          <input v-model="password" type="password" placeholder="Password" class="input-field" required />
+          <input v-model="password2" type="password" placeholder="Re-enter Password" class="input-field" required />
+          <button type="submit" class="button register">Register</button>
         </form>
+      </div>
     </div>
+  </div>
 </template>
 
 <style scoped>
-body {
-    background-color: #141414;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    padding: 20px 0 70px;
-    color: #ffffff;
-}
-
 .hero {
-    background-color: #141414;
-    color: #ffffff;
-    text-align: center;
-    padding: 60px 20px;
-    margin-bottom: 20px;
+  background-image: url('your-image-url-here.jpg');
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background-color: #0d0d0d;
 }
 
-.hero h1 {
-    font-size: 60px;
-    color: #e50914;
-    margin-bottom: 10px;
-    font-weight: bold;
+.overlay {
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.9));
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  padding: 40px 20px;
 }
 
-.hero p {
-    font-size: 20px;
-    margin-bottom: 20px;
-    color: #d3d3d3;
+.navbar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 25px 40px;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.8);
+  position: absolute;
+  top: 0;
+  z-index: 10;
+}
+
+.navbar h1 {
+  font-size: 2.5rem;
+  font-family: 'Poppins', sans-serif;
+  color: #e50914;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+}
+
+.navbar .login,
+.navbar .back {
+  background-color: #e50914;
+  color: #ffffff;
+  padding: 10px 20px;
+  text-decoration: none;
+  border: none;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.navbar .login:hover,
+.navbar .back:hover {
+  background-color: #f40612;
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
 
 .form-container {
-    background-color: #222222;
-    border-radius: 10px;
-    padding: 40px 20px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.6);
-    max-width: 400px;
-    margin: 0 auto;
+  text-align: center;
+  margin-top: 20px;
 }
 
 .form-container h2 {
-    color: #e50914;
-    text-align: center;
-    font-size: 28px;
-    margin-bottom: 30px;
-    font-weight: bold;
+  font-size: 2.5rem;
+  color: #ffffff;
+  margin-bottom: 30px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.form-container form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
 }
 
 .input-field {
-    width: 80%; 
-    padding: 10px; 
-    margin-bottom: 15px;
-    border: 2px solid #333333;
-    border-radius: 5px;
-    font-size: 14px; 
-    color: #ffffff;
-    background-color: #141414;
-    display: block;
-    margin-left: auto;
-    margin-right: auto; 
+  padding: 15px 20px;
+  width: 100%;
+  max-width: 400px;
+  border: 1px solid #444;
+  margin-bottom: 0;
+  transition: border-color 0.3s, background-color 0.3s;
+  background-color: #1c1c1c;
+  color: #ffffff;
+  font-size: 1rem;
+  border-radius: 5px;
 }
 
 .input-field:focus {
-    border-color: #e50914;
-    outline: none;
+  border-color: #e50914;
+  background-color: #333;
+  outline: none;
 }
 
-.button {
-    background-color: #e50914;
-    color: #ffffff;
-    padding: 12px 30px;
-    font-size: 18px;
-    border: none;
-    margin-top: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
-    width: 100%;
-    font-weight: bold;
+.register {
+  background-color: #e50914;
+  color: #ffffff;
+  padding: 12px 30px;
+  border: none;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
 }
 
-.button:hover {
-    background-color: #f40612;
-    transform: scale(1.05);
+.register:hover {
+  background-color: #f40612;
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
 
-footer {
-    background-color: #141414;
-    color: #d3d3d3;
-    text-align: center;
-    padding: 10px;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    border-top: 2px solid #333333;
+@media (max-width: 600px) {
+  .input-field {
+    width: 90%;
+  }
+
+  .navbar h1 {
+    font-size: 2rem;
+  }
+
+  .form-container h2 {
+    font-size: 2rem;
+  }
+
+  .register {
+    font-size: 1rem;
+    padding: 12px 25px;
+  }
 }
+
 </style>
